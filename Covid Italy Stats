@@ -1,0 +1,76 @@
+from google.colab import drive
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#getting it to read the file
+drive.mount('/content/drive')
+
+data = pd.read_csv(r'/content/drive/MyDrive/Covid19StatsItaly.csv')
+
+data_cleaned = pd.read_csv(r'/content/drive/MyDrive/Covid19StatsItaly.csv', skiprows=3, usecols=[0, 1], names=["dates", "numInfect"])
+
+#cleaning the data
+dates = data_cleaned['dates']
+cases = data_cleaned['numInfect'].values
+
+#plotting all the values. Like the plot above
+days = range(1, len(cases)+1)
+plt.plot(days, cases, label = 'New Infected')
+plt.xlabel('Days')
+plt.ylabel('Number Infected')
+plt.legend()
+plt.show()
+
+#computing the moving average
+def moving_average(data, N):
+  if data.size == 0:
+    return []
+
+  movingAVG = []
+  for i in range(len(data)):
+    start_index = max(0, i - N // 2)
+    end_index = min(len(data), i + N // 2 + 1)
+    bin = data[start_index:end_index]
+    if bin.size > 0:
+      movingAVG.append(sum(bin) / len(bin))
+    else:
+      movingAVG.append(0)
+  return movingAVG
+
+# defining moving average with different bin sizes
+cases_ma3 = moving_average(cases, 3)
+cases_ma5 = moving_average(cases, 5)
+cases_ma7 = moving_average(cases, 7)
+
+#plotting all the moving average cases
+plt.plot(days, cases, label='New Infected')
+plt.plot(days, cases_ma3, label='MA3')
+plt.xlabel('Days')
+plt.ylabel('Number Infected')
+plt.legend()
+plt.show()
+
+plt.plot(days, cases, label='New Infected')
+plt.plot(days, cases_ma5, label='MA5')
+plt.xlabel('Days')
+plt.ylabel('Number Infected')
+plt.legend()
+plt.show()
+
+plt.plot(days, cases, label='New Infected')
+plt.plot(days, cases_ma7, label='MA7')
+plt.xlabel('Days')
+plt.ylabel('Number Infected')
+plt.legend()
+plt.show()
+
+# as the bin size gets larger for the moving average, the oscillations
+# get smaller and the extreme values are much less. This brings down the
+# strong peaks of the chart and moves the much bigger dips further up.
+
+# first values as the header
+data_cleaned = pd.read_csv(r'/content/drive/MyDrive/Covid19StatsItaly.csv', skiprows=3, usecols=[0, 1])
+print(data_cleaned)
+
+#uploading it as new csv
+data_cleaned.to_csv(r'/content/drive/MyDrive/Covid19StatsItalyMA.csv', index=False)
