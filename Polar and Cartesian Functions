@@ -1,0 +1,148 @@
+import math
+
+def polarRep(a, b):
+  p = math.sqrt(a**2 + b**2)
+  v = math.atan2(b, a)
+  return p, v
+
+a, b = 3, 6
+p, v = polarRep(a, b)
+print("Polar representation:")
+print(f"In the case a = {a}, b = {b}, the result is: {p * math.cos(v)} + i * {p * math.sin(v)}")
+print()
+
+def cartesianRep(p, v):
+  a = p * math.cos(v)
+  b = p * math.sin(v)
+  return a, b
+
+p, v = 5, math.radians(30)
+a, b = cartesianRep(p, v)
+print("Cartesian representation:")
+print(f"In the case rho = {p}, theta = {v}, the result is: {a} + i * {b}")
+print()
+
+def divide(a1, b1, a2, b2):
+  return (a1*a2+b1*b2)/(a1**2+a2**2), (b1 * a2 - a1 * b2) / (a1**2 + a2**2)
+
+a1, b1, a2, b2 = 1, 2, 3, 4
+real, imaginary = divide(a1, b1, a2, b2)
+print("Division:")
+if a1**2 +a2**2 == 0:
+  print("Error: a1 and a2 cannot be 0")
+else:
+  print(f"In the case a1, b1, a2, b2 = 1, 2, 3, 4, respectively, the result is: {real} + i * {imaginary}.")
+  print()
+
+def add(a1, b1, a2, b2):
+  return a1 + a2, b1 + b2
+
+a1, b1, a2, b2 = 3, 6, 2, 8
+real, imaginary = add(a1, b1, a2, b2)
+print("Addition:")
+print(f"In the case a1, b1, a2, b2 = {a1}, {b1}, {a2}, {b2}, respectively, the result is: {real}+({imaginary}*i)")
+print()
+
+def mult(a1, b1, a2, b2):
+  return a1 * a2 - b1 * b2, a2 * b1 + b2 * a1
+
+a1, b1, a2, b2 = 3, 6, 2, 8
+real, imaginary = mult(a1, b1, a2, b2)
+print("Multiplication:")
+print(f"In the case a1, b1, a2, b2 = {a1}, {b1}, {a2}, {b2}, respectively, the result is: {real}+({imaginary}*i)")
+print()
+
+def power(a, b, n):
+  p = math.sqrt(a**2 + b**2)
+  v = math.atan2(b, a)
+  real = p**(n) * math.cos(v * n)
+  imaginary = p**(n) * math.sin(v * n)
+  return real, imaginary
+
+a, b, n = 3, 6, 5
+real, imaginary = power(real, imaginary, n)
+print("Power:")
+print(f"In the case a, b, n = {a}, {b}, {n}, respectively, the result is: {real} + ({imaginary}*i)")
+print()
+
+def roots(a, b, n):
+  j = 0
+  p = math.sqrt(a**2 + b**2)
+  v = math.atan2(b, a)
+  rootsList = []
+  for j in range(n):
+    real = p**(1 / n) * math.cos((v / n) + (2 * math.pi * j / n))
+    imaginary = p**(1 / n) * math.sin((v / n) + (2 * math.pi * j / n))
+    rootsList.append((real, imaginary))
+  return rootsList
+
+print("Roots:")
+a, b, n = 3, 6, 5
+if n == 0:
+  print("Error: n cannot be 0")
+else:
+  rootsList = roots(a, b, n)
+  j=1
+  for real, imaginary in rootsList:
+    print(f"Root {j}: {real} + ({imaginary}) * i")
+    j += 1
+  print()
+
+def findReal(a, b):
+  return a
+
+a, b = 3, 6
+real = findReal(a, b)
+print("Real part:")
+print(f"In the case a, b = {a}, {b}, respectively, the real part is {real}")
+print()
+
+def findImag(a, b):
+  return b
+
+a, b = 3, 6
+imag = findImag(a, b)
+print("Imaginary part:")
+print(f"In the case a, b = {a}, {b}, respectively, the imaginary part is {imag}*i")
+print()
+
+def findRadius(radius, angle):
+  if radius < 0:
+    raise ValueError("Radius cannot be negative")
+  return radius
+
+radius, angle = 5, math.pi / 4
+print("Radius:")
+print(f"For the complex number with radius = {radius} and angle = {angle}, the radius is {findRadius(radius, angle)}")
+print()
+
+def findAngle(a, b):
+  return math.atan2(b, a)
+
+a, b = 3, 6
+angle = findAngle(a, b)
+print("Angle:")
+print(f"For the complex number with a = {a} and b = {b}, the angle (radians) is {angle}")
+print()
+
+def assembleCart(real, imaginary):
+  return (real, imaginary)
+
+real, imaginary = 3, 6
+real, imaginary = assembleCart(real, imaginary)
+print("Assembled Complex Number in Cartesian Form:")
+print(f"With real part = {real} and imaginary part = {imaginary}, the complex number is {real} + ({imaginary})*i")
+print()
+
+def assemblePolar(radius, angle):
+  if radius < 0:
+    raise ValueError("Radius cannot be negative")
+  angle = angle % (2 * math.pi)
+  a = radius * math.cos(angle)
+  b = radius * math.sin(angle)
+  return (a, b)
+
+radius, angle = 5, 7
+real, imaginary = assemblePolar(radius, angle)
+print("Assembled Complex Number in Polar Form:")
+print(f"With radius = {radius} and angle = {angle}, the complex number is: {real} + ({imaginary})*i")
