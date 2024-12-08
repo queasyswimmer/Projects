@@ -1,0 +1,68 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class TriDMat:
+  def __init__(self, n, main_diagonal, upper_diagonal, lower_diagonal):
+    self.n = n
+    self.main_diagonal = main_diagonal
+    self.upper_diagonal = upper_diagonal
+    self.lower_diagonal = lower_diagonal
+
+  def get_matrix(self):
+    matrix = np.zeros((self.n, self.n))
+    for i in range(self.n):
+      matrix[i, i] = self.main_diagonal[i]
+      if i > 0:
+        matrix[i, i - 1] = self.lower_diagonal[i - 1]
+      if i < self.n - 1:
+        matrix[i, i + 1] = self.upper_diagonal[i]
+#lower and upper diagonals are shorter than the middle
+    return matrix
+
+  def get_size(self): #returns size of matrix
+    return self.n
+
+  def plotter(self): # visualization
+    matrix = self.get_matrix()
+    plt.spy(matrix)
+    plt.show()
+
+# addition. returns the values of each diagonal added with the second
+  def __add__(self, other):
+    if self.n is not other.n:
+      raise ValueError("Matrices need to be same size to be added")
+    return TriDMat(self.n, self.main_diagonal + other.main_diagonal, self.upper_diagonal + other.upper_diagonal, self.lower_diagonal + other.lower_diagonal)
+
+#subtraction. returns the values of each diagonal subtracted by the second
+  def __sub__(self, other):
+    if self.n is not other.n:
+      raise ValueError("Matrices need to be same size to be subtracted")
+    return TriDMat(self.n, self.main_diagonal - other.main_diagonal, self.upper_diagonal - other.upper_diagonal, self.lower_diagonal - other.lower_diagonal)
+
+n = 10**4
+
+#setting up operations to do with matrices
+main_diagonal1 = 2 * n**2 * np.ones(n)
+upper_diagonal1 = -n**2 * np.ones(n - 1)
+lower_diagonal1 = -n**2 * np.ones(n - 1)
+
+main_diagonal2 = n**2 * np.ones(n)
+upper_diagonal2 = -0.5 * n**2 * np.ones(n - 1)
+lower_diagonal2 = -0.5 * n**2 * np.ones(n - 1)
+
+tdm1 = TriDMat(n, main_diagonal1, upper_diagonal1, lower_diagonal1)
+tdm2 = TriDMat(n, main_diagonal2, upper_diagonal2, lower_diagonal2)
+tdm1.plotter()
+tdm2.plotter()
+
+tdm_sum = tdm1 + tdm2
+
+print("Addition")
+print(tdm_sum.get_matrix())
+tdm_sum.plotter()
+print()
+
+tdm_diff = tdm1 - tdm2
+print("Subtraction")
+print(tdm_diff.get_matrix())
+tdm_diff.plotter()
