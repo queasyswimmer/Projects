@@ -1,0 +1,160 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class Point:
+  def __init__(self, x, y):
+    self._x = x
+    self._y = y
+
+  def __eq__(self, other):
+    return self._x == other._x and self._y == other._y
+
+  def __call__(self):
+    return np.array([self._x, self._y])
+
+  def x(self):
+    return self._x
+    
+  def y(self):
+    return self._y
+
+  def plot(self):
+    plt.plot(self._x, self._y)
+
+class Edge:
+  def __init__(self, p1, p2):
+    if p1==p2:
+      raise ValueError("Points must be different.")
+    self._p1=p1
+    self._p2=p2
+    
+  def __eq__(self, other):
+    return (self._p1 == other._p1 and self._p2 == other._p2) or \
+           (self._p1 == other._p2 and self._p2 == other._p1)
+
+  def __call__(self):
+    return np.array([self._p1(), self._p2()])
+    
+  def p1(self):
+    return self._p1
+
+  def p2(self):
+    return self._p2
+
+  def length(self):
+    return np.sqrt((self._p1.x()-self._p2.x())**2+(self._p1.y()-self._p2.y())**2)
+
+  def plot(self):
+    plt.plot([self._p1.x(), self._p2.x()], [self._p1.y(), self._p2.y()])
+
+class Triangle:
+  def __init__(self, p1, p2, p3):
+    if p1 == p2 or p1 == p3 or p2 == p3:
+      raise ValueError("Error, points must be different")
+    self._p1 = p1
+    self._p2 = p2
+    self._p3 = p3
+    self._e1 = Edge(p1, p2)
+    self._e2 = Edge(p2, p3)
+    self._e3 = Edge(p3, p1)
+    if self.area() == 0:
+      raise ValueError("Error, area is zero.")
+
+  def __eq__(self, other):
+    return (self._p1 == other._p1 and self._p2 == other._p2 and self._p3 == other._p3) or \
+           (self._p1 == other._p1 and self._p2 == other._p3 and self._p3 == other._p2) or \
+           (self._p1 == other._p2 and self._p2 == other._p1 and self._p3 == other._p3) or \
+           (self._p1 == other._p3 and self._p2 == other._p1 and self._p3 == other._p2) or \
+           (self._p1 == other._p2 and self._p2 == other._p3 and self._p3 == other._p1) or \
+           (self._p1 == other._p3 and self._p2 == other._p2 and self._p3 == other._p1)
+        
+  def __call__(self):
+    return np.array([self._p1(), self._p2(), self._p3()])
+
+  def perimeter(self):
+    return self._e1.length()+self._e2.length()+self._e3.length()
+
+  def area(self):
+    a = self._e1.length()
+    b = self._e2.length()
+    c = self._e3.length()
+    s = (a+b+c)/2
+    return np.sqrt(s*(s-a)*(s-b)*(s-c))
+
+  def plot(self):
+    x = [self._p1.x(), self._p2.x(), self._p3.x(), self._p1.x()]
+    y = [self._p1.y(), self._p2.y(), self._p3.y(), self._p1.y()]
+    plt.plot(x, y)
+
+class eq_tri(Triangle):
+  def __init__(self, p1, p2, p3):
+    super().__init__(p1,p2,p3)
+    a = self._e1.length()
+    b = self._e2.length()
+    c = self._e3.length()
+    if not np.allclose(a, b) and np.allclose(b,c):
+      raise ValueError("Error: equilateral triangles have 3 equal edges")
+
+  def perimeter(self):
+    return 3 * self._e1.length()
+
+  def area(self):
+    return (np.sqrt(3)/4) * (self._e1.length()**2)
+
+p1 = Point(0, 0)
+p2 = Point(1, 0)
+p3 = Point(0.5, np.sqrt(3)/2)
+
+
+t = Triangle(p1, p2, p3)
+print(f"Perimeter is {t.perimeter()}")
+print(f"Area is {t.area()}")
+t.plot()
+p1.plot()
+p2.plot()
+p3.plot()
+plt.show()
+eq_t = eq_tri(p1, p2, p3)
+
+def read_stl_file(filename):
+  triangles = []
+  with open(filename) as f:
+    lines = f.readlines()
+    i = 0
+    while i < len(lines):
+      if "facet normal" in lines[i]:
+        vertex_coords = []
+        for j in range(i + 2, i + 5):
+          line = lines[j].strip()
+          if "vertex" in line:
+            x, y, z = map(float, line.split()[1:])
+            vertex_coords.append((x,y))
+        try:
+          p1 = Point(vertex_coords[0][0],vertex_coords[0][1])
+          p2 = Point(vertex_coords[1][0],vertex_coords[1][1])
+          p3 = Point(vertex_coords[2][0],vertex_coords[2][1])
+          triangles.append(Triangle(p1, p2, p3))
+        except ValueError as e:
+          print("Error creating triangle:",e)
+        next_facet_index = -1
+        for k in range(i + 1, len(lines)):
+          if "facet normal" in lines[k]:
+            next_facet_index = k
+            break
+        if next_facet_index != -1:
+          i = next_facet_index
+        else:
+            i = len(lines)
+      else:
+        i += 1
+  return triangles
+
+triangles = read_stl_file('/content/final.stl')
+
+for triangle in triangles:
+  x = [triangle._p1.x(), triangle._p2.x(), triangle._p3.x(), triangle._p1.x()]
+  y = [triangle._p1.y(), triangle._p2.y(), triangle._p3.y(), triangle._p1.y()]
+  plt.plot(x, y)
+plt.show()
+
+# the final shape of the stl file is a dodecagon or a twelve sided polygon
