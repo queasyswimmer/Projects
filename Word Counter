@@ -1,0 +1,43 @@
+with open("/content/USConstArt1.txt", "r") as file:
+    const = file.read()
+
+def countCitizen(const):
+  counter = 0
+  for word in const.lower().split():
+    if "citizen" in word.strip('.,!?"\''):
+      counter = counter + 1
+  return counter
+
+def countJustice(const):
+  counter = 0
+  for word in const.lower().split():
+    if "justice" in word.strip('.,!?"\''):
+      counter = counter + 1
+  return counter
+
+def countSenator(const):
+  counter = 0
+  for word in const.lower().split():
+    if "senator" in word.strip('.,!?"\''):
+      counter = counter + 1
+  return counter
+
+def countTax(const):
+  counter = 0
+  for word in const.lower().split():
+    if "tax" in word.strip('.,!?"\''):
+      counter = counter + 1
+  return counter
+
+def countLaw(const):
+  counter = 0
+  for word in const.lower().split():
+    if "law" in word.strip('.,!?"\''):
+      counter = counter + 1
+  return counter
+
+print(f"Citizen appears {countCitizen(const)} times")
+print(f"Justice appears {countJustice(const)} times")
+print(f"Senator appears {countSenator(const)} times ")
+print(f"Tax appears {countTax(const)} times")
+print(f"Law appears {countLaw(const)} times ")
