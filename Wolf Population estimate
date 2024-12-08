@@ -1,0 +1,76 @@
+mu = 0.9
+H = 0
+K = 3000
+print("Insert initial population")
+N = float(input())
+y = 50
+for i in range (y-1): #y-1 because it starts at y=0 and then goes to 50 so it includes 51 values
+  N = N + mu * N * (1-N/K) * (N/(K/2)-1) - H
+print(f"After 50 years, the wolf population is {N}.")
+
+# 𝑁(0)=200  -> goes to 0
+# 𝑁(0)=1200 -> goes to 0
+# 𝑁(0)=1500 -> stays the same
+# 𝑁(0)=1800 -> goes to 3000
+# 𝑁(0)=3000 -> stays the same
+# 𝑁(0)=3500 -> goes to 3000
+
+mu = 0.9
+K = 3000
+y = 50
+N = 4000
+max = 0
+H = 1
+
+while H < 1000:
+  alive = True
+  N = 4000
+  for i in range(0, y - 1):
+    N = N + mu * N * (1 - N / K) * (N / (K / 2) - 1) - H
+    if N <= 0:
+      alive = False
+      break
+  if alive:
+    max = H
+  H = H + 1
+
+print(f"Maximum sustainable hunting rate every other year is {max} wolves.")
+
+mu = 0.9
+K = 3000
+y = 50
+N = 4000
+max = 0
+H = 1
+while H < 1000:
+  alive = True
+  for i in range(0, y - 1, 2):
+    N = N + mu * N * (1 - N/K) * (N/(K/2) - 1) - H
+    if N <= 0:
+      alive = False
+      break
+  if alive:
+    max = H
+  H = H + 1
+
+print(f"Maximum sustainable hunting rate is {max} wolves every other year.")
+# Maximum sustainable hunting rate is 262 wolves every other year.
+
+
+mu = 0.9
+K = 3000
+N = 4000
+hunt = [100, 150, 180, 200]
+
+for rate in hunt:
+  pop = N
+  y = 0
+  while pop > 1500 and y < 50:
+    pop = pop + mu * pop * (1 - pop / K) * (pop / (K / 2) - 1) - rate
+    y += 1
+  print(f"Removing {rate} wolves per year is sustainable for {y} years.")
+
+# Removing 100 wolves per year is sustainable for 50 years.
+# Removing 150 wolves per year is sustainable for 16 years.
+# Removing 180 wolves per year is sustainable for 6 years.
+# Removing 200 wolves per year is sustainable for 4 years.
