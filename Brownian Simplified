@@ -1,0 +1,32 @@
+from random import random
+def brown1d(N):
+  p=0
+  for i in range(N):
+    if random()<0.5:
+      p=p-1
+    else:
+      p=p+1
+  return p
+def run(N,M):
+  a = [0] * (2 * N + 1)
+  for i in range(M):
+    newp = brown1d(N)
+    a[newp + N] += 1
+  return a
+
+a = run(9, 1000)
+print(f"Where N = 9 and M = 1000, a is {a}")
+a = run(10, 1000)
+print(f"Where N = 10 and M = 1000, a is {a}")
+a = run(11, 1000)
+print(f"Where N = 11 and M = 1000, a is {a}")
+a = run(12, 1000)
+print(f"Where N = 12 and M = 1000, a is {a}")
+
+import statistics
+a = run(10, 10000)
+print(f"Where N = 10 and M = 10000, a is {a}")
+mode = statistics.mode(a)
+print(f"The mode is {mode}")
+# distribution becomes normal dist around 0
+# the distribution as N and M go to infinity is normal around zero because it was a pattern seen in these results as M and N increase
